@@ -1,21 +1,24 @@
-import torch
 from torch.utils.data import Dataset
-import librosa 
-import pandas as pd
+from glob import glob
+import numpy as np
+import torchaudio
 
 class AudioDataset(Dataset):
 
-    def __init__(self,basepath,metadata_path):
-        self.audio_dir = basepath
-        self.annotation = pd.read_csv(metadata_path)
+    def __init__(self,duration,filelist):
+        self.duration = duration
+        self.filelist = filelist
         
     def __len__(self):
-        return len(self.annotation)
+        return len(self.filelist)
 
     def __getitem__(self,idx):
-        start_time,duration, filename = self.annotation.iloc[idx].values
-        filename = self.audio_dir + filename
-        
-        audio,_ = librosa.load(filename,sr=None,offset=start_time,duration=duration)
-        return torch.unsqueeze(torch.Tensor(audio),0)
+        audio_file = self.filelist[idx]
+        audio, fs = torchaudio.load(audio_file)
+        LEN = int(self.duration*fs)
+        if audio.shape[1] > LEN:
+            offset = np.random.randint(0, audio.shape[1] - LEN)
+        else:
+            offset = 0
+        return audio[:, offset:offset + LEN]
 

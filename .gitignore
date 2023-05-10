@@ -1,3 +1,4 @@
 exp/run*
 exp/checkpoints/*
 *.pyc
+*.wav

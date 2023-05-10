@@ -1,12 +1,11 @@
 # paths
-basepath: '/home/pedro.lopes/tts_data/voz_base_44kHz_16bit/wavs_48/'
-metadata_path: '/home/pedro.lopes/tts_data/voz_base_44kHz_16bit/metadata_diff.csv'
+wavs_path: '/home/pedro.lopes/tts_data/voz_base_44kHz_16bit/wavs_48/'
 expdir: '/home/pedro.lopes/diff_vocoder_pytorch/exp'
 
 # training hyperparameters
 batch_size: 4
-learning_rate: 0.002
-total_epochs: 5
+learning_rate: 1.0e-6
+total_epochs: 100
 print_interval: 10
-save_interval: 200
+save_interval: 5000
 checkpoint_path: '/home/pedro.lopes/diff_vocoder_pytorch/exp/checkpoints/'

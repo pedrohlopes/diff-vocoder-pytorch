@@ -5,6 +5,7 @@ from torch import optim
 from torch.utils.data import DataLoader
 import yaml
 import torch
+from glob import glob
 
 LEN = 2 ** 18
 
@@ -37,8 +38,9 @@ if __name__ == '__main__':
         except yaml.YAMLError as e:
             print('invalid config file:',e)
             
-    optimizer = optim.SGD(model.parameters(), lr=configs['learning_rate'], momentum=0.9)     
-    training_set = AudioDataset(configs['basepath'],configs['metadata_path'])
+    optimizer = optim.Adam(model.parameters(), lr=configs['learning_rate'])
+    training_filelist = glob(configs['wavs_path'] + '*.wav')    
+    training_set = AudioDataset(duration= 5.0,filelist=training_filelist)
     training_loader = DataLoader(training_set, batch_size=configs['batch_size'], shuffle=True,collate_fn=collate_fn)
     trainer = Trainer(model,configs)
     trainer.train(optimizer,training_loader)

@@ -13,7 +13,7 @@ upsampler = DiffusionUpsampler(
     diffusion_t=VDiffusion, # The diffusion method used
     sampler_t=VSampler, # The diffusion sampler used
 )
-LEN = 2 ** 18
+LEN = 2 ** 14
 def collate_fn(batch):
     bsz = len(batch)
     out = torch.zeros(bsz, 1, LEN)
@@ -21,12 +21,15 @@ def collate_fn(batch):
         out[i, :, :x.shape[1]] = x # torch.from_numpy(x)
     return out
 
-upsampler.load_state_dict(torch.load('/home/pedro.lopes/diff_vocoder_pytorch/exp/checkpoints/model_1600.pt'))
+upsampler.load_state_dict(torch.load('/home/pedro.lopes/diff_vocoder_pytorch/exp/checkpoints/model_1800.pt'))
 filename = '/home/pedro.lopes/tts_data/voz_base_44kHz_16bit/wavs_48/JornalNacional_01_00041.wav'
 start_time = 2
 duration = 5.0
 audio_orig,_ = librosa.load(filename,sr=None,offset=start_time,duration=duration)
+print(audio_orig.shape)
 audio_tensor = torch.unsqueeze(torch.unsqueeze(torch.Tensor(audio_orig),0),0)
 downsampled_audio = downsample(audio_tensor,factor=4)
-sample = upsampler.sample(collate_fn(downsampled_audio), num_steps=10)
+print(downsampled_audio.shape)
+sf.write('downsampled.wav',downsampled_audio[0][0],samplerate=48000//4)
+sample = upsampler.sample(collate_fn(downsampled_audio), num_steps=35)
 sf.write('output.wav',sample[0][0],samplerate=48000)
