@@ -1,6 +1,7 @@
 import wave
 import csv
 import os
+from tqdm import tqdm
 
 def get_wav_info(wav_file):
     with wave.open(wav_file, 'rb') as wf:
@@ -15,7 +16,7 @@ def construct_csv(wav_dir, output_csv, duration, hop):
     with open(output_csv, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['start_time', 'duration', 'filename'])
-        for wav_file in os.listdir(wav_dir):
+        for wav_file in tqdm(os.listdir(wav_dir)):
             if wav_file.endswith('.wav'):
                 wav_path = os.path.join(wav_dir, wav_file)
                 channels, sample_width, frame_rate, n_frames, wav_duration = get_wav_info(wav_path)
@@ -26,4 +27,4 @@ def construct_csv(wav_dir, output_csv, duration, hop):
 
 if __name__ == '__main__':
 
-    construct_csv('/path/to/wav/files', 'output.csv', 2.0, 0.01)
+    construct_csv('/home/pedro.lopes/tts_data/voz_base_44kHz_16bit/wavs_48/', 'output.csv', 5.0, 0.01)

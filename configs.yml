@@ -1,4 +1,10 @@
+# paths
+basepath: '/home/pedro.lopes/tts_data/voz_base_44kHz_16bit/wavs_48/'
+metadata_path: '/home/pedro.lopes/tts_data/voz_base_44kHz_16bit/metadata_diff.csv'
+expdir: '/home/pedro.lopes/diff_vocoder_pytorch/exp'
+
+# training hyperparameters
+batch_size: 2
+learning_rate: 0.001
 total_epochs: 5
 print_interval: 10
-basepath: 'path/to/wavs/'
-metadata_path: 'path/to/metadata.csv'

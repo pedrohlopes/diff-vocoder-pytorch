@@ -31,9 +31,8 @@ class Trainer:
 
             # Zero your gradients for every batch!
             optimizer.zero_grad()
-
             # Make predictions for this batch
-            loss = self.train_one_step(inputs)
+            loss = self._train_one_step(inputs)
 
             # Adjust learning weights
             optimizer.step()

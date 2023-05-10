@@ -13,8 +13,9 @@ class AudioDataset(Dataset):
         return len(self.annotation)
 
     def __getitem__(self,idx):
-        start_time,duration, filename = self.annotation.iloc[idx].values()
+        start_time,duration, filename = self.annotation.iloc[idx].values
+        filename = self.audio_dir + filename
         
         audio,_ = librosa.load(filename,sr=None,offset=start_time,duration=duration)
-        return torch.Tensor(audio)
+        return torch.unsqueeze(torch.Tensor(audio),0)
 
