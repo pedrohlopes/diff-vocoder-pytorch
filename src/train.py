@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 import yaml
 import torch
 
-LEN = 2 ** 19
+LEN = 2 ** 18
 
 def collate_fn(batch):
     bsz = len(batch)

@@ -4,9 +4,9 @@ metadata_path: '/home/pedro.lopes/tts_data/voz_base_44kHz_16bit/metadata_diff.cs
 expdir: '/home/pedro.lopes/diff_vocoder_pytorch/exp'
 
 # training hyperparameters
-batch_size: 2
+batch_size: 4
 learning_rate: 0.001
 total_epochs: 5
 print_interval: 10
-save_interval: 20
+save_interval: 200
 checkpoint_path: '/home/pedro.lopes/diff_vocoder_pytorch/exp/checkpoints/'
