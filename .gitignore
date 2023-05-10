@@ -1,2 +1,3 @@
-exp/*
+exp/run*
+exp/checkpoints/*
 *.pyc

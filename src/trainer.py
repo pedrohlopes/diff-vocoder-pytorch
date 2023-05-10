@@ -1,7 +1,7 @@
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
-timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 from audio_diffusion_pytorch import DiffusionUpsampler, UNetV0, VDiffusion, VSampler
+import torch
 
 
 class Trainer:
@@ -9,7 +9,7 @@ class Trainer:
     def __init__(self, model, configs):
         self.configs = configs
         self.model = model
-        self.writer = SummaryWriter('{}/run_{}'.format(self.configs['expdir'],timestamp))
+        self.writer = SummaryWriter('{}/run'.format(self.configs['expdir']))
         
     def _train_one_step(self, batch):
         
@@ -18,10 +18,12 @@ class Trainer:
         return loss
         
     
-    def _train_one_epoch(self, epoch_index, tb_writer, optimizer, training_loader, print_interval):
+    def _train_one_epoch(self, epoch_index, tb_writer, optimizer, training_loader, configs):
         running_loss = 0.
         last_loss = 0.
-
+        print_interval = configs['print_interval']
+        save_interval = configs['save_interval']
+        checkpoint_path = configs['checkpoint_path']
         # Here, we use enumerate(training_loader) instead of
         # iter(training_loader) so that we can track the batch
         # index and do some intra-epoch reporting
@@ -41,10 +43,14 @@ class Trainer:
             running_loss += loss.item()
             if i % print_interval == 0:
                 last_loss = running_loss / print_interval # loss per batch
-                print('  batch {} loss: {}'.format(i + 1, last_loss))
-                tb_x = epoch_index * len(training_loader) + i + 1
+                print('  batch {}/{} loss: {}'.format(i,len(training_loader), last_loss))
+                tb_x = epoch_index * len(training_loader) + i
                 tb_writer.add_scalar('Loss/train', last_loss, tb_x)
                 running_loss = 0.
+            if (epoch_index*len(training_loader) + i) % save_interval == 0:
+                print('Saving model...')
+                torch.save(self.model.state_dict(), checkpoint_path + ('model_%d.pt' % (epoch_index*len(training_loader) + i)))
+                
 
         return last_loss
     
@@ -58,8 +64,8 @@ class Trainer:
     def train(self, optimizer, training_loader): # to do: add validation loader and logic
         self.model.train(True)
         for epoch in range(self.configs['total_epochs']):
-            print('EPOCH {}:'.format(epoch+ 1))
-            avg_loss = self._train_one_epoch(epoch, self.writer,optimizer,training_loader,self.configs['print_interval']) # to do: add validation loader and logic
+            print('EPOCH {}:'.format(epoch))
+            avg_loss = self._train_one_epoch(epoch, self.writer,optimizer,training_loader,self.configs) # to do: add validation loader and logic
             print('LOSS train: {}'.format(avg_loss))
 
             # Log the running loss averaged per batch

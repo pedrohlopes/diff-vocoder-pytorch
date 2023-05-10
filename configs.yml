@@ -8,3 +8,5 @@ batch_size: 2
 learning_rate: 0.001
 total_epochs: 5
 print_interval: 10
+save_interval: 20
+checkpoint_path: '/home/pedro.lopes/diff_vocoder_pytorch/exp/checkpoints/'
