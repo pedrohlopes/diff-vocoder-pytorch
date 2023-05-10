@@ -1,0 +1,4 @@
+total_epochs: 5
+print_interval: 10
+basepath: 'path/to/wavs/'
+metadata_path: 'path/to/metadata.csv'
